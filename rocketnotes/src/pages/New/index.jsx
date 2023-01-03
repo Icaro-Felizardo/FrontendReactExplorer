@@ -4,29 +4,43 @@ import { Container, Form } from "./styles";
 import { Textarea } from "../../components/Textarea";
 import { NoteItem } from "../../components/NoteItem";
 import { Section } from "../../components/Section";
+import { Button } from "../../components/Button";
+import { Link } from 'react-router-dom'
 
 export function New(){
     return(
         <Container>
             <Header/>
-        <contet>
-            <Form>
-                <header>
-                    <h1>Criar Nota</h1>
-                    <a href="/">Voltar</a>
-                </header>
+            <main>
+                <content>
+                    <Form>
+                        <header>
+                            <h1>Criar Nota</h1>
+                            <Link to="/">Voltar</Link>
+                        </header>
 
-                <Input placeholder="Título"/>
-                <Textarea placeholder="Observações"/>
+                        <Input placeholder="Título"/>
+                        <Textarea placeholder="Observações"/>
 
-                <Section title="Links Úteis">
-                    <NoteItem value="teste.com.br"/>
-                    <NoteItem isNew placeholder="Novo Link"/>
+                        <Section title="Links Úteis">
+                            <NoteItem value="teste.com.br"/>
+                            <NoteItem isNew placeholder="Novo Link"/>
 
-                </Section>
-                
-            </Form>
-        </contet> 
+                        </Section>
+
+                        <Section title="Marcagores">
+
+                            <div className="tags">
+                                <NoteItem value="React"/>
+                                <NoteItem isNew placeholder="Nova Tag"/>
+                            </div>
+                        </Section>
+
+                        <Button title= "Salvar"/>
+                        
+                    </Form>
+                </content> 
+        </main>
         </Container>
     )
 }

@@ -5,7 +5,7 @@ import { RiShutDownLine } from 'react-icons/ri'
 export function Header(){
     return(
     <Container>
-        <Profile>
+        <Profile to="/perfil">
             <img src="https://github.com/Icaro-Felizardo.png" alt="" />
             <div>
                 <span>Bem vindo,</span>
