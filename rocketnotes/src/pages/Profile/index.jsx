@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useAuth } from "../../hooks/auth";
 import { Container, Form, Avatar } from "./styles"
 import { FiArrowLeft, FiUser, FiLock, FiMail, FiCamera } from "react-icons/fi"
 import { Input } from "../../components/Input"
@@ -6,6 +8,25 @@ import { Link } from 'react-router-dom'
 
 
 export function Profile(){
+    const { user, updateProfile } = useAuth();
+
+    const [name, setName] = useState(user.name);
+    const [email, setEmail] = useState(user.email);
+    const [passwordOld, setPasswordOld] = useState();
+    const [passwordNew, setPasswordNew] = useState();
+
+    async function handleUpdate(){
+
+        const user = {
+            name,
+            email,
+            newPassword: passwordNew,
+            oldPassword: passwordOld
+        }
+
+        await updateProfile({ user });
+    }
+
     return(
         <Container>
             <header>
@@ -36,27 +57,33 @@ export function Profile(){
                     placeholder="Nome"
                     type="text"
                     icon={FiUser}
+                    value={name}
+                    onChange={e=> setName(e.target.value)}
                 />
 
                 <Input 
                     placeholder="Email"
                     type="text"
                     icon={FiMail}
+                    value={email}
+                    onChange={e=> setEmail(e.target.value)}
                 />
 
                 <Input 
                     placeholder="Senha atual"
                     type="password"
                     icon={FiLock}
+                    onChange={e=> setPasswordOld(e.target.value)}
                 />
 
                 <Input 
                     placeholder="Nova senha"
                     type="password"
                     icon={FiLock}
+                    onChange={e=> setPasswordNew(e.target.value)}
                 />
 
-                <Button title="Salvar"/>
+                <Button title="Salvar" onPress={handleUpdate}/>
             </Form>
         </Container>
     )
