@@ -6,7 +6,22 @@ import { Note } from '../../components/Note/index.jsx'
 import { Input } from '../../components/Input/index.jsx'
 import {Container, Brand, Menu, Search, Content, NewNote} from './styles.js'
 
+import { useState, useEffect } from 'react';
+import { api } from '../../services/api.js'
+
 export function Home(){
+
+    const[tags, setTags] = useState([]);
+
+    useEffect(() =>{
+        async function fetchTags(){
+            const response = await api.get("/tags");
+            setTags(response.data);
+        };
+
+        fetchTags();
+    })
+    
     return(
         <Container>
             <Brand><h1>Rocket Notes</h1></Brand>
@@ -15,8 +30,17 @@ export function Home(){
 
             <Menu>
                 <li><ButtonText title="Todos"></ButtonText></li>
-                <li><ButtonText title="React"></ButtonText></li>
-                <li><ButtonText title="NodeJs"></ButtonText></li>
+                
+                {
+                    tags && tags.map(tag => (
+                        <li key={String(tag.id)}>
+                            <ButtonText 
+                                title={tag.name}
+
+                            />
+                        </li>
+                    ))
+                }
             </Menu>
 
             <Search>
