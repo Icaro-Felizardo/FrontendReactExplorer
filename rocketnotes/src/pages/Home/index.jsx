@@ -1,21 +1,26 @@
-import { FiPlus, FiSearch } from 'react-icons/fi'
-import { Header } from '../../components/Header/index.jsx'
-import { ButtonText } from '../../components/ButtonText/index.jsx'
-import { Section } from '../../components/Section/index.jsx'
-import { Note } from '../../components/Note/index.jsx'
-import { Input } from '../../components/Input/index.jsx'
-import {Container, Brand, Menu, Search, Content, NewNote} from './styles.js'
+import { FiPlus, FiSearch } from 'react-icons/fi';
+import { Header } from '../../components/Header/index.jsx';
+import { ButtonText } from '../../components/ButtonText/index.jsx';
+import { Section } from '../../components/Section/index.jsx';
+import { Note } from '../../components/Note/index.jsx';
+import { Input } from '../../components/Input/index.jsx';
+import {Container, Brand, Menu, Search, Content, NewNote} from './styles.js';
 
 import { useState, useEffect } from 'react';
-import { api } from '../../services/api.js'
+import { useNavigate } from 'react-router-dom';
+import { api } from '../../services/api.js';
 
 export function Home(){
 
+    const[search, setSearch] = useState("");
     const[tags, setTags] = useState([]);
     const[tagsSelected, setTagsSelected] = useState([]);
+    const[notes, setNotes] = useState([]);
+
+    const navigate = useNavigate();
 
     function handleTagSelected(tagName){
-
+        
         const alredySelected = tagsSelected.includes(tagName);
 
         if(alredySelected){
@@ -27,6 +32,10 @@ export function Home(){
 
     }
 
+    function handleDetails(id){
+        navigate(`/nota/${id}`)
+    }
+
     useEffect(() =>{
         async function fetchTags(){
             const response = await api.get("/tags");
@@ -35,6 +44,16 @@ export function Home(){
 
         fetchTags();
     },[])
+
+    useEffect(() => {
+        async function fetchNotes(){
+            const response = await api.get(`/notes?title=${search}&tags=${tagsSelected}`)
+            setNotes(response.data);
+        }
+
+        fetchNotes();
+
+    },[tagsSelected, search])
     
     return(
         <Container>
@@ -45,7 +64,7 @@ export function Home(){
             <Menu>
                 <li><ButtonText 
                     title="Todos"
-                    onPress={() => handleTagSelected("Todos")}
+                    onClick={() => setTagsSelected([])}
                     isActive = {tagsSelected.length === 0}
                     />
                 </li>
@@ -64,17 +83,26 @@ export function Home(){
             </Menu>
 
             <Search>
-                <Input placeholder='Pesquisar pelo título' icon={FiSearch}/>
+                <Input 
+                    placeholder='Pesquisar pelo título' 
+                    icon={FiSearch}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
             </Search>
 
             <Content>
                 <Section title={"Minhas Notas"}>
-                    <Note data={{title: 'React', 
-                    tags: [
-                        {id: '1', name: 'react'},
-                        {id: '2', name: 'teste'}
-                    ]
-                    }}/>
+
+                    {
+                        notes.map(note => 
+                            <Note 
+                                key={String(note.id)}
+                                data={note}   
+                                onClick={() => handleDetails(note.id)}                         
+                            />
+                        )
+                    }
+                    
                 </Section>
             </Content>
 
